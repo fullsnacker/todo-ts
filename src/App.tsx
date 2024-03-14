@@ -1,57 +1,42 @@
-import { useState } from 'react';
+import { Footer } from './components/Footer';
+import { Header } from './components/Header';
 import { Todos } from './components/Todos';
-import { type Todo as TodoType, type TodoId } from './types';
+import { useTodos } from './hooks/useTodos';
 
-const mockTodos = [
-	{
-		id: '1',
-		title: 'Aprender React',
-		completed: true
-	},
-	{
-		id: '2',
-		title: 'Sacar ticket',
-		completed: false
-	},
-	{
-		id: '3',
-		title: 'Enviar maill',
-		completed: false
-	}
-];
-
-export const App = (): JSX.Element => {
-	const [todos, setTodos] = useState(mockTodos);
-
-	const handleRemove = ({ id }: TodoId): void => {
-		const newTodos = todos.filter((todo) => todo.id !== id);
-		setTodos(newTodos);
-	};
-
-	const handleCompleted = ({
-		id,
-		completed
-	}: Pick<TodoType, 'id' | 'completed'>): void => {
-		const newTodos = todos.map((todo) => {
-			if (todo.id === id) {
-				return {
-					...todo,
-					completed
-				};
-			}
-			return todo;
-		});
-
-		setTodos(newTodos);
-	};
+const App: React.FC = () => {
+	const {
+		activeCount,
+		completedCount,
+		filterSelected,
+		handleClearCompleted,
+		handleCompleted,
+		handleFilterChange,
+		handleRemove,
+		handleSave,
+		handleUpdateTitle,
+		todos: filteredTodos
+	} = useTodos();
 
 	return (
-		<div className="todoapp">
-			<Todos
-				onRemoveTodo={handleRemove}
-				onToggleCompleteTodo={handleCompleted}
-				todos={todos}
-			/>{' '}
-		</div>
+		<>
+			<div className="todoapp">
+				<Header saveTodo={handleSave} />
+				<Todos
+					removeTodo={handleRemove}
+					setCompleted={handleCompleted}
+					setTitle={handleUpdateTitle}
+					todos={filteredTodos}
+				/>
+				<Footer
+					handleFilterChange={handleFilterChange}
+					completedCount={completedCount}
+					activeCount={activeCount}
+					filterSelected={filterSelected}
+					onClearCompleted={handleClearCompleted}
+				/>
+			</div>
+		</>
 	);
 };
+
+export default App;
