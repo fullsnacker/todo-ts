@@ -4,4 +4,8 @@ export interface Todo {
 	completed: boolean;
 }
 
+export type TodoId = Omit<Todo, 'title' | 'completed'>;
+export type TodoTitle = Pick<Todo, 'title'>;
+export type TodoCompleted = Pick<Todo, 'completed'>;
+
 export type ListOfTodos = Todo[];
